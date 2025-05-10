@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Quiz App</title>
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+  <div id="auth-section" class="flex flex-col items-center mt-10">
+    <input id="email" type="email" placeholder="Email" class="mb-2 p-2 border rounded">
+    <input id="password" type="password" placeholder="Password" class="mb-2 p-2 border rounded">
+    <button onclick="signIn()" class="bg-blue-500 text-white p-2 rounded">Sign In</button>
+    <button onclick="signUp()" class="bg-green-500 text-white p-2 rounded">Sign Up</button>
+  </div>
+  <div id="quiz-section" class="hidden p-4">
+    <h1 class="text-2xl font-bold mb-4">Quiz App</h1>
+    <div id="subjects-list"></div>
+    <div id="chapters-list"></div>
+    <div id="questions-list"></div>
+    <button onclick="signOut()" class="bg-red-500 text-white p-2 rounded mt-4">Sign Out</button>
+  </div>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+</body>
+</html>
