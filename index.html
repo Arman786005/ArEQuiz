@@ -10,6 +10,7 @@
 </head>
 <body class="bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 min-h-screen flex flex-col items-center justify-center">
 
+  <!-- Auth Section -->
   <div id="auth-section" class="w-full max-w-xs mx-auto mt-10 animate__animated animate__fadeIn">
     <div class="bg-white shadow-lg rounded-lg p-8">
       <h2 class="text-2xl font-bold text-center mb-6 text-purple-600">ArEQuiz Login</h2>
@@ -20,6 +21,7 @@
     </div>
   </div>
 
+  <!-- Quiz Section -->
   <div id="quiz-section" class="hidden w-full max-w-2xl mx-auto mt-10 animate__animated animate__fadeIn">
     <div class="bg-white shadow-lg rounded-lg p-8">
       <h1 class="text-3xl font-bold mb-6 text-center text-purple-700">Welcome to ArEQuiz!</h1>
@@ -33,6 +35,120 @@
   <!-- Supabase library FIRST -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <!-- Your app code SECOND -->
-  <script src="app.js"></script>
+  <script>
+    // Supabase credentials
+    const SUPABASE_URL = 'https://kahycodadobjjqriskoc.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImthaHljb2RhZG9iampxcmlza29jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY4NTM4MDgsImV4cCI6MjA2MjQyOTgwOH0.QWPod9Pn1_fA9L9Xr6rmYpdX7BqV1AeUXp8BzatgAwo';
+
+    // Create Supabase client
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Sign Up
+    async function signUp() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      if (!email || !password) {
+        alert("Please enter both email and password.");
+        return;
+      }
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) {
+        alert(error.message);
+      } else {
+        alert('Sign up successful! Please check your email to confirm your account.');
+      }
+    }
+
+    // Sign In
+    async function signIn() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      if (!email || !password) {
+        alert("Please enter both email and password.");
+        return;
+      }
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        alert(error.message);
+      } else {
+        document.getElementById('auth-section').classList.add('hidden');
+        document.getElementById('quiz-section').classList.remove('hidden');
+        loadSubjects();
+      }
+    }
+
+    // Sign Out
+    async function signOut() {
+      await supabase.auth.signOut();
+      document.getElementById('quiz-section').classList.add('hidden');
+      document.getElementById('auth-section').classList.remove('hidden');
+    }
+
+    // Load Subjects
+    async function loadSubjects() {
+      const { data, error } = await supabase.from('subjects').select('*');
+      if (error) {
+        alert(error.message);
+        return;
+      }
+      const list = document.getElementById('subjects-list');
+      list.innerHTML = '';
+      data.forEach(subject => {
+        const btn = document.createElement('button');
+        btn.textContent = subject.name;
+        btn.className = 'bg-purple-200 hover:bg-purple-300 text-purple-900 font-semibold px-4 py-2 rounded shadow transition animate__animated animate__fadeInUp';
+        btn.onclick = () => loadChapters(subject.id);
+        list.appendChild(btn);
+      });
+      document.getElementById('chapters-list').innerHTML = '';
+      document.getElementById('questions-list').innerHTML = '';
+    }
+
+    // Load Chapters
+    async function loadChapters(subjectId) {
+      const { data, error } = await supabase.from('chapters').select('*').eq('subject_id', subjectId);
+      if (error) {
+        alert(error.message);
+        return;
+      }
+      const list = document.getElementById('chapters-list');
+      list.innerHTML = '';
+      data.forEach(chapter => {
+        const btn = document.createElement('button');
+        btn.textContent = chapter.name;
+        btn.className = 'bg-blue-200 hover:bg-blue-300 text-blue-900 font-semibold px-4 py-2 rounded shadow transition animate__animated animate__fadeInUp';
+        btn.onclick = () => loadQuestions(chapter.id);
+        list.appendChild(btn);
+      });
+      document.getElementById('questions-list').innerHTML = '';
+    }
+
+    // Load Questions
+    async function loadQuestions(chapterId) {
+      const { data, error } = await supabase.from('questions').select('*').eq('chapter_id', chapterId);
+      if (error) {
+        alert(error.message);
+        return;
+      }
+      const list = document.getElementById('questions-list');
+      list.innerHTML = '';
+      data.forEach(q => {
+        const div = document.createElement('div');
+        div.className = 'bg-gradient-to-r from-purple-100 to-blue-100 p-4 rounded shadow animate__animated animate__fadeIn';
+        div.innerHTML = `<b class="text-lg">${q.question}</b><br>`;
+        const opts = JSON.parse(q.options);
+        opts.forEach((opt, i) => {
+          div.innerHTML += `<div class="pl-4">${String.fromCharCode(65 + i)}. ${opt}</div>`;
+        });
+        list.appendChild(div);
+      });
+    }
+
+    // Realtime updates for subjects
+    supabase
+      .channel('realtime-subjects')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'subjects' }, () => loadSubjects())
+      .subscribe();
+  </script>
 </body>
 </html>
