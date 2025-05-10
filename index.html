@@ -1,24 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Quiz App</title>
-  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>ArEQuiz - Quiz App</title>
+  <!-- Tailwind CSS for styling -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Animate.css for animations -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
-<body class="bg-gray-100">
-  <div id="auth-section" class="flex flex-col items-center mt-10">
-    <input id="email" type="email" placeholder="Email" class="mb-2 p-2 border rounded">
-    <input id="password" type="password" placeholder="Password" class="mb-2 p-2 border rounded">
-    <button onclick="signIn()" class="bg-blue-500 text-white p-2 rounded">Sign In</button>
-    <button onclick="signUp()" class="bg-green-500 text-white p-2 rounded">Sign Up</button>
+<body class="bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 min-h-screen flex flex-col items-center justify-center">
+
+  <div id="auth-section" class="w-full max-w-xs mx-auto mt-10 animate__animated animate__fadeIn">
+    <div class="bg-white shadow-lg rounded-lg p-8">
+      <h2 class="text-2xl font-bold text-center mb-6 text-purple-600">ArEQuiz Login</h2>
+      <input id="email" type="email" placeholder="Email" class="mb-3 w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-purple-400 transition"/>
+      <input id="password" type="password" placeholder="Password" class="mb-3 w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-purple-400 transition"/>
+      <button onclick="signIn()" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold p-2 rounded mb-2 transition animate__animated animate__pulse">Sign In</button>
+      <button onclick="signUp()" class="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold p-2 rounded transition">Sign Up</button>
+    </div>
   </div>
-  <div id="quiz-section" class="hidden p-4">
-    <h1 class="text-2xl font-bold mb-4">Quiz App</h1>
-    <div id="subjects-list"></div>
-    <div id="chapters-list"></div>
-    <div id="questions-list"></div>
-    <button onclick="signOut()" class="bg-red-500 text-white p-2 rounded mt-4">Sign Out</button>
+
+  <div id="quiz-section" class="hidden w-full max-w-2xl mx-auto mt-10 animate__animated animate__fadeIn">
+    <div class="bg-white shadow-lg rounded-lg p-8">
+      <h1 class="text-3xl font-bold mb-6 text-center text-purple-700">Welcome to ArEQuiz!</h1>
+      <div id="subjects-list" class="mb-6 flex flex-wrap gap-2 justify-center"></div>
+      <div id="chapters-list" class="mb-6 flex flex-wrap gap-2 justify-center"></div>
+      <div id="questions-list" class="space-y-4"></div>
+      <button onclick="signOut()" class="w-full mt-6 bg-red-400 hover:bg-red-500 text-white font-semibold p-2 rounded transition">Sign Out</button>
+    </div>
   </div>
+
+  <!-- Supabase library FIRST -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <!-- Your app code SECOND -->
   <script src="app.js"></script>
 </body>
 </html>
